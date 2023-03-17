@@ -1,16 +1,17 @@
-# **************************************************************************** #
-#                                                                              #
-#                                                         :::      ::::::::    #
-#    Makefile                                           :+:      :+:    :+:    #
-#                                                     +:+ +:+         +:+      #
-#    By: revieira <revieira@student.42sp.org.br>    +#+  +:+       +#+         #
-#                                                 +#+#+#+#+#+   +#+            #
-#    Created: 2022/09/01 18:11:10 by revieira          #+#    #+#              #
-#    Updated: 2022/12/07 11:08:38 by revieira         ###   ########.fr        #
-#                                                                              #
-# **************************************************************************** #
-
 NAME 		=	libft.a
+
+SHELL		:= 	/bin/bash
+COUNT		:= 	0
+
+BLACK  		 = \033[0;30m
+RED    		 = \033[0;31m
+GREEN  		 = \033[0;32m
+YELLOW 		 = \033[0;33m
+BLUE   		 = \033[0;34m
+MAGENTA		 = \033[0;35m
+CYAN   		 = \033[0;36m
+WHITE  		 = \033[0;37m
+RESET  		 = \033[0m
 
 INCLUDES 	=	includes/
 PATH_SRCS 	=	sources/
@@ -31,24 +32,29 @@ FILES 		= 	ft_atoi ft_isalnum ft_isalpha ft_isascii \
 
 OBJS 		=	$(addprefix $(PATH_OBJS), $(addsuffix .o, $(FILES) ) )
 SRCS 		=	$(addsuffix .c, $(FILES) ) 
-CFLAGS 		=	-Wall -Werror -Wextra
+CFLAGS 		=	-Wall -Werror -Wextra -g3
 
 all : $(NAME)
 
 $(NAME) : $(PATH_OBJS) $(OBJS)
-	ar rcs $(NAME) $(OBJS)
+	@ar rcs $(NAME) $(OBJS)
+	@printf "\n$(MAGENTA)Libft was compiled\n$(RESET)"
 
 $(PATH_OBJS):
-	mkdir -p $(PATH_OBJS)
+	@mkdir -p $(PATH_OBJS)
 
 $(PATH_OBJS)%.o : $(PATH_SRCS)%.c 
-	cc $(CFLAGS) -I $(INCLUDES) -c $< -o $@
+	@$(eval COUNT=$(shell expr $(COUNT) + 1))
+	@cc $(CFLAGS) -I $(INCLUDES) -c $< -o $@
+	@printf "$(GREEN)Compiling libft %d%%\r$(RESET)" $$(echo $$(($(COUNT) * 100 / $(words $(SRCS)))))
 
 clean :
-	rm -rf $(PATH_OBJS)
+	@rm -rf $(PATH_OBJS)
+	@printf "$(RED)Deleted objects$(RESET)\n"
 
 fclean : clean
-	rm -f $(NAME)
+	@rm -f $(NAME)
+	@printf "$(RED)Libft is deleted$(RESET)\n"
 
 re : fclean all
 
