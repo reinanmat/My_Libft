@@ -5,65 +5,55 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: revieira <revieira@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/09/15 15:28:35 by coder             #+#    #+#             */
-/*   Updated: 2022/11/16 12:02:43 by revieira         ###   ########.fr       */
+/*   Created: 2023/03/17 16:35:48 by revieira          #+#    #+#             */
+/*   Updated: 2023/03/17 17:02:45 by revieira         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../includes/libft.h"
+#include "libft.h"
 
-static size_t	ft_cwords(char const *s, char c)
+static int	count_words(const char *s, char c)
 {
-	size_t	count;
+	size_t	words;
 
-	count = 0;
+	words = 0;
 	while (*s)
 	{
 		while (*s == c)
 			s++;
 		if (*s && *s != c)
-			count++;
+			words++;
 		while (*s && *s != c)
 			s++;
 	}
-	return (count);
+	return (words);
 }
 
-static void	ft_insstr(char **str, char const *s, char c)
+char	**ft_split(const char *str, char c)
 {
-	size_t	position;
-	size_t	start;
-	size_t	len;
-	size_t	i;
+	int		i;
+	char	**lst;
+	size_t	curr_word_len;
 
-	position = 0;
 	i = 0;
-	while (s[i])
+	if (!str)
+		return (0);
+	lst = (char **)ft_calloc(sizeof(char *), count_words(str, c) + 1);
+	if (!lst)
+		return (0);
+	while (*str)
 	{
-		len = 0;
-		while (s[i] == c)
-			i++;
-		start = i;
-		while (s[i] && s[i] != c)
+		while (*str == c)
+			str++;
+		if (*str)
 		{
-			len++;
-			i++;
+			if (!ft_strchr(str, c))
+				curr_word_len = ft_strlen((char *)str);
+			else
+				curr_word_len = ft_strchr(str, c) - str;
+			lst[i++] = ft_substr(str, 0, curr_word_len);
+			str += curr_word_len;
 		}
-		if (len != 0)
-			str[position++] = ft_substr(s, start, len);
 	}
-	str[position] = NULL;
-}
-
-char	**ft_split(char const *s, char c)
-{
-	char	**arstr;
-
-	if (!s)
-		return (0x0);
-	arstr = (char **)ft_calloc(ft_cwords(s, c) + 1, sizeof(char *));
-	if (!arstr)
-		return (0x0);
-	ft_insstr(arstr, s, c);
-	return (arstr);
+	return (lst);
 }
